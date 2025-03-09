@@ -34,10 +34,10 @@ class Blockchain {
         if (JSON.stringify(chain[0]) !== JSON.stringify(Block.genesis())) return false;
 
         for(let i = 1; i < chain.length; i++) {
-            const {data, timestamp, lastHash, hash} = chain[i];
+            const {data, timestamp, lastHash, hash, nonce, difficulty} = chain[i];
             const actualHash = chain[i-1].hash;
             if(actualHash !== lastHash) return false; 
-            const validatedHash = cryptoHash(data, timestamp, lastHash);
+            const validatedHash = cryptoHash(data, timestamp, lastHash, nonce, difficulty);
             if(hash !== validatedHash) return false;
         }
 
