@@ -6,9 +6,9 @@ const PubSub = require('./pubsub')
 
 const app = express();
 const blockchain = new Blockchain();
-const pusub = new PubSub({ blockchain });
+const pubsub = new PubSub({ blockchain });
 
-setTimeout(() => pusub.broadcastChain(), 1000);
+setTimeout(() => pubsub.broadcastChain(), 1000);
 
 app.use(bodyParser.json());
 
@@ -22,8 +22,18 @@ app.post('/api/mine', (req, res) => {
     Object.assign(sanitizedData, data);
 
     blockchain.addBlock({ data });
+
+    pubsub.broadcastChain();
     res.redirect('/api/blocks');
 });
 
-const PORT = 3000;
+const DEFAULT_PORT = 3000;
+
+let PEER_PORT;
+
+if(process.env.GENERATE_PEER_PORT === 'true') {
+    PEER_PORT = DEFAULT_PORT + Math.ceil(Math.random() * 1000);
+}
+
+const PORT = PEER_PORT || DEFAULT_PORT;
 app.listen(PORT, ()=> console.log(`listining at localhost:${PORT}`));
