@@ -2,9 +2,13 @@ const _ = require('lodash');
 const bodyParser = require('body-parser');
 const express = require('express');
 const Blockchain = require('./blockchain');
+const PubSub = require('./pubsub')
 
 const app = express();
 const blockchain = new Blockchain();
+const pusub = new PubSub({ blockchain });
+
+setTimeout(() => pusub.broadcastChain(), 1000);
 
 app.use(bodyParser.json());
 
